@@ -1,0 +1,153 @@
+package com.example.quanganh.app;
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.lang.reflect.Method;
+
+public class ReadActivity extends AppCompatActivity {
+
+    WebView wvContent;
+    Chap chap;
+    Bundle bundle;
+    Dialog dialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_read);
+        init();
+    }
+
+    private void init() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        wvContent = (WebView) findViewById(R.id.ar_content);
+        wvContent.setBackgroundColor(Color.TRANSPARENT);
+
+        bundle = getIntent().getBundleExtra("bundle");
+        chap = (Chap) bundle.getSerializable("chap");
+        Log.e("search", "false");
+        setTitle(chap.getDeName());
+
+        String content = "<html><body style=\"color: white; font-size: 15px;\">" + chap.getDeContent() + "</body></html>";
+        wvContent.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+
+        boolean search = getIntent().getBooleanExtra("search", false);
+        if (search) {
+            Log.e("search", "true");
+            String find = getIntent().getStringExtra("find");
+            wvContent.findAllAsync(find);
+            try {
+                Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+                m.invoke(wvContent, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                break;
+            case R.id.action_search:
+                dialog = new Dialog(ReadActivity.this, android.R.style.Theme_Holo_Light_Dialog);
+                dialog.setContentView(R.layout.search_dialog);
+                dialog.setTitle("Tìm kiếm");
+
+                Button btnSearch = (Button) dialog.findViewById(R.id.search_dialog_button_search);
+                Button btnExit = (Button) dialog.findViewById(R.id.search_dialog_button_exit);
+
+                btnSearch.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String storyName = ((EditText) dialog.findViewById(R.id.search_dialog_edit_text_story_name)).getText().toString();
+                        String paragraph = ((EditText) dialog.findViewById(R.id.search_dialog_edit_text_paragraph)).getText().toString();
+                        if (storyName.equals("")) {
+                            Toast.makeText(getApplicationContext(), "Bạn chưa nhập tên truyện", Toast.LENGTH_SHORT).show();
+                        } else if (paragraph.equals("")) {
+                            Toast.makeText(getApplicationContext(), "Bạn chưa nhập đoạn cần tìm", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent intent = new Intent(ReadActivity.this, FindActivity.class);
+                            intent.putExtra("name", storyName);
+                            intent.putExtra("find", paragraph);
+                            startActivity(intent);
+//                            startActivityForResult(intent, 1);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        }
+                    }
+                });
+                btnExit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.cancel();
+                    }
+                });
+                dialog.show();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        Log.e("result", "result");
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 1 && resultCode == 1) {
+//            if (data != null) {
+//                chap = (Chap) data.getBundleExtra("bundle").getSerializable("chap");
+//                setTitle(chap.getDeName());
+//                String content = "<html><body style=\"color: white; font-size: 15px;\">" + chap.getDeContent() + "</body></html>";
+//                wvContent.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+//
+//                String find = data.getStringExtra("find");
+//                wvContent.findAllAsync(find);
+//                try {
+//                    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+//                    m.invoke(wvContent, true);
+//                    Log.e("ádf", "ádfasdf");
+//                } catch (Exception e) {
+//                    Log.e("Error", "Lỗi");
+//                }
+//            } else {
+//                Log.e("data : ", "null");
+//            }
+//        }
+//    }
+}
