@@ -11,48 +11,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.35"
-            android:text="Tên truyện :"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="#000000"/>
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.65"
             android:id="@+id/search_dialog_edit_text_story_name"
-            android:textAppearance="?android:textAppearanceSmall"/>
+            android:textAppearance="?android:textAppearanceMedium"
+            android:hint="Tên truyện"/>
         <ImageButton
             android:id="@+id/search_dialog_speech_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/presence_audio_away"/>
+            android:src="@android:drawable/presence_audio_away"
+            android:contentDescription="speech_name" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.35"
-            android:text="Đoạn :"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="#000000"/>
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.65"
             android:id="@+id/search_dialog_edit_text_paragraph"
-            android:textAppearance="?android:textAppearanceSmall" />
+            android:textAppearance="?android:textAppearanceMedium"
+            android:hint="Đoạn"/>
         <ImageButton
             android:id="@+id/search_dialog_speech_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/presence_audio_away" />
+            android:src="@android:drawable/presence_audio_away"
+            android:contentDescription="speech_paragraph" />
     </LinearLayout>
 
     <LinearLayout
