@@ -174,7 +174,7 @@ public class ReadActivity extends AppCompatActivity {
                 break;
         }
     }
-//
+
     //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        Log.e("result", "result");
