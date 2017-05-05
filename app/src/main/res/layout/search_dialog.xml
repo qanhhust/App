@@ -24,6 +24,11 @@
             android:layout_weight="0.65"
             android:id="@+id/search_dialog_edit_text_story_name"
             android:textAppearance="?android:textAppearanceSmall"/>
+        <ImageButton
+            android:id="@+id/search_dialog_speech_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/presence_audio_away"/>
     </LinearLayout>
 
     <LinearLayout
@@ -42,7 +47,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.65"
             android:id="@+id/search_dialog_edit_text_paragraph"
-            android:textAppearance="?android:textAppearanceSmall"/>
+            android:textAppearance="?android:textAppearanceSmall" />
+        <ImageButton
+            android:id="@+id/search_dialog_speech_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/presence_audio_away" />
     </LinearLayout>
 
     <LinearLayout

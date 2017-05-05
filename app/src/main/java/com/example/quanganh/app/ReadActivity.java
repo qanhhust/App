@@ -1,8 +1,10 @@
 package com.example.quanganh.app;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,9 +16,12 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class ReadActivity extends AppCompatActivity {
 
@@ -82,6 +87,8 @@ public class ReadActivity extends AppCompatActivity {
 
                 Button btnSearch = (Button) dialog.findViewById(R.id.search_dialog_button_search);
                 Button btnExit = (Button) dialog.findViewById(R.id.search_dialog_button_exit);
+                ImageButton speechName = (ImageButton) dialog.findViewById(R.id.search_dialog_speech_name);
+                ImageButton speechContent = (ImageButton) dialog.findViewById(R.id.search_dialog_speech_content);
 
                 btnSearch.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -108,12 +115,36 @@ public class ReadActivity extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
+                speechName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        promptSpeechInput(1);
+                    }
+                });
+                speechContent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        promptSpeechInput(2);
+                    }
+                });
                 dialog.show();
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void promptSpeechInput(int requestCode) {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something!");
+        try {
+            startActivityForResult(intent, requestCode);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(ReadActivity.this, "Sorry! Your device doesn't support speech language", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -125,7 +156,26 @@ public class ReadActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-//    @Override
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK && data != null) {
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    ((EditText) dialog.findViewById(R.id.search_dialog_edit_text_story_name)).setText(result.get(0));
+                }
+                break;
+            case 2:
+                if (resultCode == RESULT_OK && data != null) {
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    ((EditText) dialog.findViewById(R.id.search_dialog_edit_text_paragraph)).setText(result.get(0));
+                }
+                break;
+        }
+    }
+
+    //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        Log.e("result", "result");
 //        super.onActivityResult(requestCode, resultCode, data);
