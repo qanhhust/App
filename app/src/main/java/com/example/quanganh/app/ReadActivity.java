@@ -54,6 +54,8 @@ public class ReadActivity extends AppCompatActivity {
         setTitle(chap.getDeName());
 
         String content = "<html><body style=\"color: white; font-size: 15px;\">" + chap.getDeContent() + "</body></html>";
+        content = content.trim();
+        content = format(content);
         wvContent.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
 
         boolean search = getIntent().getBooleanExtra("search", false);
@@ -68,6 +70,17 @@ public class ReadActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static String format(String str) {
+        String s = str.trim();
+        String regex = "(\\s|\\t)+";
+        StringBuilder builder = new StringBuilder();
+        String[] split = s.split(regex);
+        for (String st : split) {
+            builder.append(st + " ");
+        }
+        return builder.toString();
     }
 
     @Override

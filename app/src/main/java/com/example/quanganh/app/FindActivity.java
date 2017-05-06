@@ -19,6 +19,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
@@ -68,59 +70,36 @@ public class FindActivity extends AppCompatActivity {
     }
 
     private List<Integer> findIndex(String string, String source) {
-        return morrisPratt(string.toLowerCase(), source.toLowerCase());
+        return findRegularExpression(string.toLowerCase().trim(), source.toLowerCase().trim());
     }
 
-    private static List<Integer> morrisPratt(String find, String source)
-    {
-        int[] map = computeKMPMap(find, source);
-        int n = source.length();
-        int m = find.length();
-        int i = 0;
-        String res = "";
+    private static List<Integer> findRegularExpression(String string, String source) {
+        String s = format(string);
+        String regex = "(" + s + ")+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(source);
         List<Integer> list = new ArrayList<>();
-        for (int j = 0; j < n; j++)
-        {
-            while ((i >= 0) && (find.charAt(i) != source.charAt(j))) i = map[i];
-            i++;
-            if (i == m)
-            {
-                list.add(j - m + 1);
-                res += String.valueOf(j - m + 1) + " ";
-                i = map[i];
-            }
+        while (matcher.find()) {
+            list.add(matcher.start());
+            Log.e("index", String.valueOf(matcher.start()));
         }
-        System.out.println(res);
         return list;
     }
 
-    private static int[] computeMPMap(String find, String source) {
-        int m = find.length();
-        int[] mpMap = new int[m + 1];
-        mpMap[0] = -1;
-        int i = 0; int j = mpMap[i];
-        while (i < m)
-        {
-            while (j >= 0 && (find.charAt(i) != find.charAt(j))) j = mpMap[j];
-            j++; i++;
-            mpMap[i] = j;
+    public static String format(String str) {
+        String s = str.trim();
+        String regex = "(\\s|\\t)+";
+        StringBuilder builder = new StringBuilder();
+        String[] split = s.split(regex);
+        for (String st : split) {
+            builder.append(st + " ");
         }
-        return mpMap;
+        return builder.toString();
     }
 
-    private static int[] computeKMPMap(String find, String source)
-    {
-        int m = find.length();
-        int[] kmpMap = new int[m + 1];
-        int[] mpMap = computeMPMap(find, source);
-        kmpMap[0] = -1; kmpMap[m] = mpMap[m];
-        for (int i = 1; i < m; i++)
-        {
-            int j = mpMap[i];
-            if (find.charAt(i) != find.charAt(j)) kmpMap[i] = j;
-            else kmpMap[i] = mpMap[j];
-        }
-        return kmpMap;
+    private static List<Integer> find1(String string, String source) {
+        String regex = "";
+        return null;
     }
 
     class Find extends AsyncTask<String, Void, List<FindContent>> {
