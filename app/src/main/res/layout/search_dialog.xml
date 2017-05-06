@@ -58,7 +58,8 @@
             android:layout_weight="0.3"
             android:text="Tìm"
             android:id="@+id/search_dialog_button_search"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:background="@drawable/button"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -67,6 +68,7 @@
             android:text="Thoát"
             android:id="@+id/search_dialog_button_exit"
             android:textAllCaps="false"
-            android:layout_marginLeft="5dp" />
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/button"/>
     </LinearLayout>
 </LinearLayout>

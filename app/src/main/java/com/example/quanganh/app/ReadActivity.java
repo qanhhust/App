@@ -19,6 +19,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.quanganh.app.rule.Rule;
+import com.example.quanganh.app.rule.Rule1;
+import com.example.quanganh.app.rule.Rule2;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -128,6 +132,14 @@ public class ReadActivity extends AppCompatActivity {
                     }
                 });
                 dialog.show();
+                break;
+            case R.id.action_check_syntax:
+                Rule[] rule = new Rule[2];
+                rule[0] = new Rule1();
+                rule[1] = new Rule2();
+                String s = chap.getDeContent();
+                s = s.replaceAll("<br />", " ");
+                Log.e("content", s.substring(100, 200));
                 break;
             default:
                 break;
