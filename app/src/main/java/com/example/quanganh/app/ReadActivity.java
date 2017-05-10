@@ -3,33 +3,32 @@ package com.example.quanganh.app;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.Color;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.quanganh.app.rule.Rule;
-import com.example.quanganh.app.rule.Rule1;
-import com.example.quanganh.app.rule.Rule2;
-
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class ReadActivity extends AppCompatActivity {
 
-    WebView wvContent;
+    TextView tvContent;
+    ScrollView svContent;
     Chap chap;
     Bundle bundle;
     Dialog dialog;
@@ -45,43 +44,62 @@ public class ReadActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        wvContent = (WebView) findViewById(R.id.ar_content);
-        wvContent.setBackgroundColor(Color.TRANSPARENT);
+        tvContent = (TextView) findViewById(R.id.ar_content);
+        svContent = (ScrollView) findViewById(R.id.ar_scroll_view);
 
         bundle = getIntent().getBundleExtra("bundle");
         chap = (Chap) bundle.getSerializable("chap");
         Log.e("search", "false");
         setTitle(chap.getDeName());
 
-        String content = "<html><body style=\"color: white; font-size: 15px;\">" + chap.getDeContent() + "</body></html>";
-        content = content.trim();
-        content = format(content);
-        wvContent.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+        String content = format(chap.getDeContent());
+        tvContent.setText(content);
 
         boolean search = getIntent().getBooleanExtra("search", false);
         if (search) {
             Log.e("search", "true");
-            String find = getIntent().getStringExtra("find");
-            wvContent.findAllAsync(find);
-            try {
-                Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
-                m.invoke(wvContent, true);
-            } catch (Exception e) {
-                e.printStackTrace();
+            final String find = getIntent().getStringExtra("find");
+            int index = content.indexOf(find);
+            Spannable spannable = new SpannableString(tvContent.getText());
+            if (index != -1) {
+                spannable.setSpan(new BackgroundColorSpan(0xFFF9740E), index, index + find.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tvContent.setText(spannable, TextView.BufferType.SPANNABLE);
+                svContent.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int indexOfWord = tvContent.getText().toString().indexOf(find);
+                        int line = tvContent.getLayout().getLineForOffset(indexOfWord);
+                        int y = tvContent.getLayout().getLineTop(line);
+                        svContent.scrollTo(0, y);
+                    }
+                });
             }
         }
     }
 
-    public static String format(String str) {
-        String s = str.trim();
-        String regex = "(\\s|\\t)+";
-        StringBuilder builder = new StringBuilder();
-        String[] split = s.split(regex);
-        for (String st : split) {
-            builder.append(st + " ");
-        }
-        return builder.toString();
+    private static String format(String str) {
+        String s = str;
+        s = s.replaceAll("<br/>", "\n");
+        s = s.replaceAll("<br />", "\n");
+        s = s.replaceAll("<td>", " ");
+        s = s.replaceAll("</td>", " ");
+        s = s.replaceAll("<span>", " ");
+        s = s.replaceAll("</span>", " ");
+        s = s.replaceAll("<p>", "\n");
+        s = s.replaceAll("</p>", "\n");
+        return s;
     }
+
+//    public static String format(String str) {
+//        String s = str.trim();
+//        String regex = "(\\s|\\t)+";
+//        StringBuilder builder = new StringBuilder();
+//        String[] split = s.split(regex);
+//        for (String st : split) {
+//            builder.append(st + " ");
+//        }
+//        return builder.toString();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -121,7 +139,7 @@ public class ReadActivity extends AppCompatActivity {
                             intent.putExtra("name", storyName);
                             intent.putExtra("find", paragraph);
                             startActivity(intent);
-//                            startActivityForResult(intent, 1);
+//                            startActivityForResult(intent, 3);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                     }
@@ -147,17 +165,65 @@ public class ReadActivity extends AppCompatActivity {
                 dialog.show();
                 break;
             case R.id.action_check_syntax:
-                Rule[] rule = new Rule[2];
-                rule[0] = new Rule1();
-                rule[1] = new Rule2();
-                String s = chap.getDeContent();
-                s = s.replaceAll("<br />", " ");
-                Log.e("content", s.substring(100, 200));
+                checkSyntax("ght");
+
+//                String s = chap.getDeContent();
+//                s = s.replaceAll("<br />", " ");
+//                Log.e("content", s.substring(100, 200));
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkSyntax(String str) {
+        Rule[] rule = getRule();
+        for (int i = 0; i < rule.length; ++i) {
+            if (rule[i] != null) {
+                if (!rule[i].checkValid(str)) {
+                    rule[i].show();
+                }
+            }
+        }
+    }
+
+    private Rule[] getRule() {
+        Rule[] rule = new Rule[33];
+        rule[0] = new Rule1();
+        rule[1] = new Rule2();
+        rule[2] = new Rule3();
+        rule[3] = new Rule4();
+        rule[4] = new Rule5();
+        rule[5] = new Rule6();
+        rule[6] = new Rule7();
+        rule[7] = new Rule8();
+        rule[8] = new Rule9();
+        rule[9] = new Rule10();
+        rule[10] = new Rule11();
+        rule[11] = new Rule12();
+        rule[12] = new Rule13();
+        rule[13] = new Rule14();
+        rule[14] = new Rule15();
+        rule[15] = new Rule16();
+        rule[16] = new Rule17();
+        rule[17] = new Rule18();
+        rule[18] = new Rule19();
+        rule[19] = new Rule20();
+        rule[20] = new Rule21();
+        rule[21] = new Rule22();
+        rule[22] = new Rule23();
+        rule[23] = new Rule24();
+        rule[24] = new Rule25();
+        rule[25] = new Rule26();
+        rule[26] = new Rule27();
+        rule[27] = new Rule28();
+        rule[28] = new Rule29();
+        rule[29] = new Rule30();
+        rule[30] = new Rule31();
+        rule[31] = new Rule32();
+        rule[32] = new Rule33();
+        return rule;
     }
 
     private void promptSpeechInput(int requestCode) {

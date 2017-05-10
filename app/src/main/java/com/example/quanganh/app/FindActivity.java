@@ -70,36 +70,48 @@ public class FindActivity extends AppCompatActivity {
     }
 
     private List<Integer> findIndex(String string, String source) {
-        return findRegularExpression(string.toLowerCase().trim(), source.toLowerCase().trim());
+        return findRegularExpression(string.toLowerCase(), source.toLowerCase());
     }
 
     private static List<Integer> findRegularExpression(String string, String source) {
-        String s = format(string);
-        String regex = "(" + s + ")+";
+//        String s = format(string);
+        String regex = "(" + string + ")+";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
         List<Integer> list = new ArrayList<>();
         while (matcher.find()) {
             list.add(matcher.start());
-            Log.e("index", String.valueOf(matcher.start()));
         }
         return list;
     }
 
-    public static String format(String str) {
-        String s = str.trim();
-        String regex = "(\\s|\\t)+";
-        StringBuilder builder = new StringBuilder();
-        String[] split = s.split(regex);
-        for (String st : split) {
-            builder.append(st + " ");
-        }
-        return builder.toString();
-    }
+//    public static String format(String str) {
+//        String s = str.trim();
+//        String regex = "(\\s|\\t)+";
+//        StringBuilder builder = new StringBuilder();
+//        String[] split = s.split(regex);
+//        for (String st : split) {
+//            builder.append(st + " ");
+//        }
+//        return builder.toString();
+//    }
 
-    private static List<Integer> find1(String string, String source) {
+        private static List<Integer> find1(String string, String source) {
         String regex = "";
         return null;
+    }
+
+    private static String format(String str) {
+        String s = str;
+        s = s.replaceAll("<br/>", " ");
+        s = s.replaceAll("<br />", " ");
+        s = s.replaceAll("<td>", " ");
+        s = s.replaceAll("</td>", " ");
+        s = s.replaceAll("<span>", " ");
+        s = s.replaceAll("</span>", " ");
+        s = s.replaceAll("<p>", " ");
+        s = s.replaceAll("</p>", " ");
+        return s;
     }
 
     class Find extends AsyncTask<String, Void, List<FindContent>> {
@@ -142,16 +154,15 @@ public class FindActivity extends AppCompatActivity {
             adapter.close();
             List<FindContent> list = new ArrayList<>();
             String find = params[1];
-            String[] split = find.split(" ");
             for (int i = 0; i < content.size(); ++i) {
-                List<Integer> index = findIndex(find, content.get(i));
+                String s = format(content.get(i));
+                List<Integer> index = findIndex(find, s);
                 for (int ind : index) {
-                    String sub = content.get(i).substring(ind, ind + 30);
+                    String sub = s.substring(ind, ind + 30);
+                    Log.e("sub: ", sub);
                     int chapId = chapID.get(i);
                     String name = chapName.get(i);
                     list.add(new FindContent(chapId, sub, name));
-                    Log.e("content : ", content.get(i).substring(0, 30));
-                    Log.e("sub : ", content.get(i).substring(ind, ind + 30));
                 }
             }
             return list;
@@ -190,6 +201,7 @@ public class FindActivity extends AppCompatActivity {
                         cursor.close();
                         adapter.close();
                         Intent intent = new Intent(FindActivity.this, ReadActivity.class);
+//                        Intent intent = new Intent();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("chap", chap);
                         intent.putExtra("bundle", bundle);

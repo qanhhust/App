@@ -48,4 +48,5 @@ public class FindContent implements Serializable {
     public void setChapName(String chapName) {
         this.chapName = chapName;
     }
+
 }
