@@ -90,17 +90,6 @@ public class ReadActivity extends AppCompatActivity {
         return s;
     }
 
-//    public static String format(String str) {
-//        String s = str.trim();
-//        String regex = "(\\s|\\t)+";
-//        StringBuilder builder = new StringBuilder();
-//        String[] split = s.split(regex);
-//        for (String st : split) {
-//            builder.append(st + " ");
-//        }
-//        return builder.toString();
-//    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
@@ -166,10 +155,6 @@ public class ReadActivity extends AppCompatActivity {
                 break;
             case R.id.action_check_syntax:
                 checkSyntax("ght");
-
-//                String s = chap.getDeContent();
-//                s = s.replaceAll("<br />", " ");
-//                Log.e("content", s.substring(100, 200));
                 break;
             default:
                 break;
@@ -265,30 +250,4 @@ public class ReadActivity extends AppCompatActivity {
                 break;
         }
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        Log.e("result", "result");
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 1 && resultCode == 1) {
-//            if (data != null) {
-//                chap = (Chap) data.getBundleExtra("bundle").getSerializable("chap");
-//                setTitle(chap.getDeName());
-//                String content = "<html><body style=\"color: white; font-size: 15px;\">" + chap.getDeContent() + "</body></html>";
-//                wvContent.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
-//
-//                String find = data.getStringExtra("find");
-//                wvContent.findAllAsync(find);
-//                try {
-//                    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
-//                    m.invoke(wvContent, true);
-//                    Log.e("ádf", "ádfasdf");
-//                } catch (Exception e) {
-//                    Log.e("Error", "Lỗi");
-//                }
-//            } else {
-//                Log.e("data : ", "null");
-//            }
-//        }
-//    }
 }
