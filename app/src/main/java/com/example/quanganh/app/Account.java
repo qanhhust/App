@@ -18,11 +18,21 @@ public class Account implements Serializable {
 
     private String userName;
     private String passWord;
-
+    private String phone;
 
     public Account(String userName, String passWord) {
         this.userName = userName;
         this.passWord = passWord;
+    }
+
+    public Account(String userName, String passWord, String phone) {
+        this.userName = userName;
+        this.passWord = passWord;
+        this.phone = phone;
+    }
+
+    public Account() {
+
     }
 
     public String getUserName() {
@@ -45,4 +55,11 @@ public class Account implements Serializable {
         return userName;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }

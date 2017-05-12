@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:id="@+id/register_dialog">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Tên đăng nhập"
+        android:id="@+id/res_username"
+        android:textAppearance="?android:textAppearanceMedium"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Mật khẩu"
+        android:id="@+id/res_password"
+        android:inputType="textPassword"
+        android:textAppearance="?android:textAppearanceMedium"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Nhập lại mật khẩu"
+        android:id="@+id/res_confirm_password"
+        android:inputType="textPassword"
+        android:textAppearance="?android:textAppearanceMedium"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Số điện thoại"
+        android:id="@+id/res_phone"
+        android:inputType="number"
+        android:textAppearance="?android:textAppearanceMedium"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:padding="3dp"
+            android:text="Đăng ký"
+            android:id="@+id/res_btn_register"
+            android:textAllCaps="false"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/button"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:padding="3dp"
+            android:text="Thoát"
+            android:id="@+id/res_btn_exit"
+            android:textAllCaps="false"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/button"/>
+    </LinearLayout>
+</LinearLayout>
