@@ -6,10 +6,12 @@ package com.example.quanganh.app;
 
 public abstract class Rule {
 
-    public String vowel = "aăâeêioôơuưy";
+    public String vowel = "aáàảãạ" + "ăắằẳẵặ" + "âấầẩẫậ" + "eéèẻẽẹ"
+            + "êếềễểệ" + "iíìỉĩị" + "oóòỏõọ" + "ôốồổỗộ"
+            + "ơớờởỡợ" + "uúùủũụ" + "ưứừửữự" + "yýỳỷỹỵ";
     public String consonant = "bcdđghklmnpqrstvx";
 
-    public abstract boolean checkValid(String s);
+    public abstract boolean checkValid(String str);
 
     public abstract void show();
 
@@ -164,7 +166,7 @@ class Rule6 extends Rule {
                     case 't':
                     case 'c':
                     case 'p':
-                        if (!before.contains(str.charAt(i - 1) + "")) {
+                        if (vowel.contains(str.charAt(i - 1) + "") && !before.contains(str.charAt(i - 1) + "")) {
                             return false;
                         }
                         break;
@@ -173,8 +175,10 @@ class Rule6 extends Rule {
         }
         if (str.length() > 2) {
             for (int i = 1; i < str.length() - 1; ++i) {
-                if (str.charAt(i) == 'c' && str.charAt(i + 1) == 'h' && !before.contains(str.charAt(i - 1) + "")) {
-                    return false;
+                if (str.charAt(i) == 'c' && str.charAt(i + 1) == 'h') {
+                    if (vowel.contains(str.charAt(i - 1) + "") && !before.contains(str.charAt(i - 1) + "")) {
+                        return false;
+                    }
                 }
             }
         }
@@ -213,17 +217,22 @@ class Rule8 extends Rule {
     @Override
     public boolean checkValid(String str) {
         if (str.length() > 1) {
-            switch (str.charAt(str.length() - 1)) {
-                case 'h':
-                    if (str.charAt(str.length() - 2) != 'n' || str.charAt(str.length() - 2) != 'c') {
-                        return false;
-                    }
-                    break;
-                case 'g':
-                    if (str.charAt(str.length() - 2) != 'n') {
-                        return false;
-                    }
-                    break;
+            if (consonant.contains(str.charAt(str.length() - 1) + "")) {
+                switch (str.charAt(str.length() - 1)) {
+                    case 'h':
+                        if (consonant.contains(str.charAt(str.length() - 2) + "")
+                                && str.charAt(str.length() - 2) != 'n'
+                                && str.charAt(str.length() - 2) != 'c') {
+                            return false;
+                        }
+                        break;
+                    case 'g':
+                        if (consonant.contains(str.charAt(str.length() - 2) + "")
+                                && str.charAt(str.length() - 2) != 'n') {
+                            return false;
+                        }
+                        break;
+                }
             }
         }
         return true;
@@ -242,16 +251,18 @@ class Rule9 extends Rule {
     public boolean checkValid(String str) {
         if (str.length() > 1) {
             int lastIndex = str.length() - 1;
-            switch (str.charAt(lastIndex)) {
-                case 'n':
-                case 'm':
-                case 't':
-                case 'p':
-                case 'c':
-                    if (consonant.contains(str.charAt(lastIndex - 1) + "")) {
-                        return false;
-                    }
-                    break;
+            if (consonant.contains(str.charAt(lastIndex) + "")) {
+                switch (str.charAt(lastIndex)) {
+                    case 'n':
+                    case 'm':
+                    case 't':
+                    case 'p':
+                    case 'c':
+                        if (consonant.contains(str.charAt(lastIndex - 1) + "")) {
+                            return false;
+                        }
+                        break;
+                }
             }
         }
         return true;
@@ -269,9 +280,10 @@ class Rule10 extends Rule {
     @Override
     public boolean checkValid(String str) {
         if (str.length() > 1) {
+            String vow = "aăâeêioôơuưy";
             for (int i = 0; i < str.length() - 1; ++i) {
                 if (str.charAt(i) == 'a') {
-                    if (!vowel.contains(str.charAt(i + 1) + "")) {
+                    if (vowel.contains(str.charAt(i + 1) + "") && !vow.contains(str.charAt(i + 1) + "")) {
                         return false;
                     }
                 }
@@ -297,7 +309,7 @@ class Rule11 extends Rule {
                 switch (str.charAt(i)) {
                     case 'á':
                     case 'à':
-                        if (!vow.contains(str.charAt(i + 1) + "")) {
+                        if (vowel.contains(str.charAt(i + 1) + "") && !vow.contains(str.charAt(i + 1) + "")) {
                             return false;
                         }
                         break;
@@ -351,7 +363,7 @@ class Rule13 extends Rule {
     @Override
     public boolean checkValid(String str) {
         if (str.length() != 4 && str.length() > 1) {
-            for (int i = 0; i < str.length(); ++i) {
+            for (int i = 0; i < str.length() - 1; ++i) {
                 if (str.charAt(i) == 'ả' && str.charAt(i + 1) == 'u') {
                     return false;
                 }
@@ -387,7 +399,7 @@ class Rule14 extends Rule {
                     case 'ẫ':
                     case 'ậ':
                     case 'ầ':
-                        if (!vow.contains(str.charAt(i + 1) + "")) {
+                        if (vowel.contains(str.charAt(i + 1) + "") && !vow.contains(str.charAt(i + 1) + "")) {
                             return false;
                         }
                         break;
@@ -446,7 +458,7 @@ class Rule16 extends Rule {
             String vow = "auêếệểễềeẻèẽẹé";
             for (int i = 0; i < str.length() - 1; ++i) {
                 if (str.charAt(i) == 'i') {
-                    if (!vow.contains(str.charAt(i + 1) + "")) {
+                    if (vowel.contains(str.charAt(i + 1) + "") && !vow.contains(str.charAt(i + 1) + "")) {
                         return false;
                     }
                 }
@@ -466,14 +478,20 @@ class Rule17 extends Rule {
 
     @Override
     public boolean checkValid(String str) {
-        if (str.length() != 3 && str.length() > 1) {
-            for (int i = 0; i < str.length(); ++i) {
+        if (str.length() != 3 && str.length() != 4 && str.length() > 1) {
+            for (int i = 0; i < str.length() - 1; ++i) {
                 if (str.charAt(i) == 'i' && str.charAt(i + 1) == 'ữ') {
                     return false;
                 }
             }
         } else if (str.length() == 3) {
             if (str.charAt(1) == 'i' && str.charAt(2) == 'ữ') {
+                if (str.charAt(0) != 'g') {
+                    return false;
+                }
+            }
+        } else if (str.length() == 4) {
+            if (str.charAt(1) == 'i' && str.charAt(2) == 'ữ' && str.charAt(3) == 'a') {
                 if (str.charAt(0) != 'g') {
                     return false;
                 }
@@ -517,7 +535,7 @@ class Rule19 extends Rule {
                     case 'ị':
                     case 'ĩ':
                     case 'í':
-                        if (!vow.contains(str.charAt(i + 1) + "")) {
+                        if (vowel.contains(str.charAt(i + 1) + "") && !vow.contains(str.charAt(i + 1) + "")) {
                             return false;
                         }
                 }
@@ -547,7 +565,7 @@ class Rule20 extends Rule {
                     case 'ẻ':
                     case 'ẽ':
                     case 'ẹ':
-                        if (!vow.contains(str.charAt(i + 1) + "")) {
+                        if (vowel.contains(str.charAt(i + 1) + "") && !vow.contains(str.charAt(i + 1) + "")) {
                             return false;
                         }
                         break;
@@ -580,6 +598,7 @@ class Rule21 extends Rule {
                     case 'ế':
                     case 'ề':
                     case 'ệ':
+                    case 'ể':
                         if (!vow.contains(str.charAt(i + 1) + "")) {
                             return false;
                         }
@@ -602,7 +621,7 @@ class Rule22 extends Rule {
     @Override
     public boolean checkValid(String str) {
         if (str.length() != 3 && str.length() != 4 && str.length() > 1) {
-            for (int i = 0; i < str.length(); ++i) {
+            for (int i = 0; i < str.length() - 1; ++i) {
                 if (str.charAt(i) == 'ễ' && str.charAt(i + 1) == 'u') {
                     return false;
                 }
@@ -634,16 +653,17 @@ class Rule23 extends Rule {
 
     @Override
     public boolean checkValid(String str) {
-        if (str.length() != 3 && str.length() > 1) {
-            for (int i = 0; i < str.length(); ++i) {
-                if (str.charAt(i) == 'ể' && str.charAt(i + 1) == 'u') {
-                    return false;
-                }
-            }
-        } else if (str.length() == 3) {
-            if (str.charAt(1) == 'ể' && str.charAt(2) == 'u') {
-                if (str.charAt(0) != 'đ') {
-                    return false;
+        Rule24 rule24 = new Rule24();
+        if (rule24.checkValid(str)) {
+            return true;
+        }
+        if (str.length() > 1) {
+            String vow = "aàáảãạăắằẳẵặiíìỉĩịeéèẻẽẹ";
+            for (int i = 0; i < str.length() - 1; ++i) {
+                if (vowel.contains(str.charAt(i) + "") && str.charAt(i) == 'o') {
+                    if (vowel.contains(str.charAt(i + 1) + "") && !vow.contains(str.charAt(i + 1) + "")) {
+                        return false;
+                    }
                 }
             }
         }
@@ -661,7 +681,23 @@ class Rule24 extends Rule {
 
     @Override
     public boolean checkValid(String str) {
-
+        if (str.length() != 5 && str.length() > 1) {
+            for (int i = 0; i < str.length() - 1; ++i) {
+                if (vowel.contains(str.charAt(i) + "")
+                        && str.charAt(i) == 'o'
+                        && str.charAt(i + 1) == 'o') {
+                    return false;
+                }
+            }
+        } else if (str.length() == 5) {
+            String first = "cxb";
+            if (str.charAt(1) == 'o' && str.charAt(2) == 'o'
+                    && str.charAt(3) == 'n' && str.charAt(4) == 'g') {
+                if (!first.contains(str.charAt(0) + "")) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -676,7 +712,25 @@ class Rule25 extends Rule {
 
     @Override
     public boolean checkValid(String str) {
-
+        String vow = "aie";
+        if (str.length() > 1) {
+            for (int i = 0; i < str.length() - 1; ++i) {
+                if (vowel.contains(str.charAt(i) + "")) {
+                    switch (str.charAt(i)) {
+                        case 'ò':
+                        case 'ó':
+                        case 'ỏ':
+                        case 'ọ':
+                        case 'õ':
+                            if (vowel.contains(str.charAt(i + 1) + "")
+                                    && !vow.contains(str.charAt(i + 1) + "")) {
+                                return false;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
         return true;
     }
 
@@ -757,7 +811,7 @@ class Rule30 extends Rule {
 
     @Override
     public void show() {
-        System.err.println("Sai luat 30");
+        System.err.println("Sai luat 33");
     }
 
 }
@@ -773,36 +827,6 @@ class Rule31 extends Rule {
     @Override
     public void show() {
         System.err.println("Sai luat 31");
-    }
-
-}
-
-class Rule32 extends Rule {
-
-    @Override
-    public boolean checkValid(String str) {
-
-        return true;
-    }
-
-    @Override
-    public void show() {
-        System.err.println("Sai luat 32");
-    }
-
-}
-
-class Rule33 extends Rule {
-
-    @Override
-    public boolean checkValid(String str) {
-
-        return true;
-    }
-
-    @Override
-    public void show() {
-        System.err.println("Sai luat 33");
     }
 
 }

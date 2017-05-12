@@ -74,8 +74,13 @@ public class FindActivity extends AppCompatActivity {
     }
 
     private static List<Integer> findRegularExpression(String string, String source) {
-//        String s = format(string);
-        String regex = "(" + string + ")+";
+        String[] split = string.split("(\\s|\\t)+");
+        StringBuilder builder = new StringBuilder();
+        for (String s : split) {
+            builder.append(s);
+            builder.append("(-|(\\s|\\t)+)");
+        }
+        String regex = "(" + builder.toString() + ")+";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
         List<Integer> list = new ArrayList<>();
@@ -85,32 +90,16 @@ public class FindActivity extends AppCompatActivity {
         return list;
     }
 
-//    public static String format(String str) {
-//        String s = str.trim();
-//        String regex = "(\\s|\\t)+";
-//        StringBuilder builder = new StringBuilder();
-//        String[] split = s.split(regex);
-//        for (String st : split) {
-//            builder.append(st + " ");
-//        }
-//        return builder.toString();
-//    }
-
-        private static List<Integer> find1(String string, String source) {
-        String regex = "";
-        return null;
-    }
-
-    private static String format(String str) {
+    private String format(String str) {
         String s = str;
-        s = s.replaceAll("<br/>", " ");
-        s = s.replaceAll("<br />", " ");
+        s = s.replaceAll("<br/>", "\n");
+        s = s.replaceAll("<br />", "\n");
         s = s.replaceAll("<td>", " ");
         s = s.replaceAll("</td>", " ");
         s = s.replaceAll("<span>", " ");
         s = s.replaceAll("</span>", " ");
-        s = s.replaceAll("<p>", " ");
-        s = s.replaceAll("</p>", " ");
+        s = s.replaceAll("<p>", "\n");
+        s = s.replaceAll("</p>", "\n");
         return s;
     }
 
@@ -158,8 +147,12 @@ public class FindActivity extends AppCompatActivity {
                 String s = format(content.get(i));
                 List<Integer> index = findIndex(find, s);
                 for (int ind : index) {
-                    String sub = s.substring(ind, ind + 30);
-                    Log.e("sub: ", sub);
+                    String sub = "";
+                    if (ind + 50 < s.length()) {
+                        sub = s.substring(ind, ind + 50);
+                    } else {
+                        sub = s.substring(ind);
+                    }
                     int chapId = chapID.get(i);
                     String name = chapName.get(i);
                     list.add(new FindContent(chapId, sub, name));
@@ -201,21 +194,18 @@ public class FindActivity extends AppCompatActivity {
                         cursor.close();
                         adapter.close();
                         Intent intent = new Intent(FindActivity.this, ReadActivity.class);
-//                        Intent intent = new Intent();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("chap", chap);
                         intent.putExtra("bundle", bundle);
                         intent.putExtra("find", findContent.getContent());
                         intent.putExtra("search", true);
                         startActivity(intent);
-//                        setResult(1, intent);
-//                        finish();
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     }
                 }));
             } else {
-                Toast.makeText(FindActivity.this, "Không tìm thấy", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
+                Toast.makeText(FindActivity.this, "Không tìm thấy", Toast.LENGTH_SHORT).show();
             }
         }
     }

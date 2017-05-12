@@ -32,6 +32,7 @@ public class ReadActivity extends AppCompatActivity {
     Chap chap;
     Bundle bundle;
     Dialog dialog;
+    String content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class ReadActivity extends AppCompatActivity {
         Log.e("search", "false");
         setTitle(chap.getDeName());
 
-        String content = format(chap.getDeContent());
+        content = format(chap.getDeContent());
         tvContent.setText(content);
 
         boolean search = getIntent().getBooleanExtra("search", false);
@@ -68,7 +69,12 @@ public class ReadActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         int indexOfWord = tvContent.getText().toString().indexOf(find);
-                        int line = tvContent.getLayout().getLineForOffset(indexOfWord);
+                        int line = 0;
+                        if (tvContent.getLayout().getLineForOffset(indexOfWord) - 10 < 0) {
+                            line = tvContent.getLayout().getLineForOffset(indexOfWord);
+                        } else {
+                            line = tvContent.getLayout().getLineForOffset(indexOfWord) - 10;
+                        }
                         int y = tvContent.getLayout().getLineTop(line);
                         svContent.scrollTo(0, y);
                     }
@@ -77,7 +83,7 @@ public class ReadActivity extends AppCompatActivity {
         }
     }
 
-    private static String format(String str) {
+    private String format(String str) {
         String s = str;
         s = s.replaceAll("<br/>", "\n");
         s = s.replaceAll("<br />", "\n");
@@ -88,6 +94,21 @@ public class ReadActivity extends AppCompatActivity {
         s = s.replaceAll("<p>", "\n");
         s = s.replaceAll("</p>", "\n");
         return s;
+    }
+
+    public String format1(String str) {
+        String s = str;
+        s = s.trim();
+        String regex = "-|\\.|,|;|\\\\|\\[|\\]|\\{|\\}|\\(|\\)|\\*|\\+|\\?|\\^|\\$|\\||:|\"|\'|!";
+        s = s.replaceAll(regex, " ");
+        regex = "(\\s|\\t)+";
+        StringBuilder builder = new StringBuilder();
+        String[] split = s.split(regex);
+        for (String sp : split) {
+            builder.append(sp);
+            builder.append(" ");
+        }
+        return builder.toString();
     }
 
     @Override
@@ -128,7 +149,6 @@ public class ReadActivity extends AppCompatActivity {
                             intent.putExtra("name", storyName);
                             intent.putExtra("find", paragraph);
                             startActivity(intent);
-//                            startActivityForResult(intent, 3);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                     }
@@ -154,7 +174,12 @@ public class ReadActivity extends AppCompatActivity {
                 dialog.show();
                 break;
             case R.id.action_check_syntax:
-                checkSyntax("ght");
+                String con = format1(content);
+                String[] split = con.split(" ");
+                Log.e("content : ", con.substring(con.length() - 1000));
+                for (String s : split) {
+                    checkSyntax(s);
+                }
                 break;
             default:
                 break;
@@ -167,6 +192,13 @@ public class ReadActivity extends AppCompatActivity {
         for (int i = 0; i < rule.length; ++i) {
             if (rule[i] != null) {
                 if (!rule[i].checkValid(str)) {
+                    System.err.println(str);
+                    int index = content.indexOf(str);
+                    Spannable spannable = new SpannableString(tvContent.getText());
+                    if (index != -1) {
+                        spannable.setSpan(new BackgroundColorSpan(0xFFF9740E), index, index + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        tvContent.setText(spannable, TextView.BufferType.SPANNABLE);
+                    }
                     rule[i].show();
                 }
             }
@@ -206,8 +238,6 @@ public class ReadActivity extends AppCompatActivity {
         rule[28] = new Rule29();
         rule[29] = new Rule30();
         rule[30] = new Rule31();
-        rule[31] = new Rule32();
-        rule[32] = new Rule33();
         return rule;
     }
 
