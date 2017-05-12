@@ -1,11 +1,22 @@
 package com.example.quanganh.app;
 
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 
 /**
@@ -22,8 +33,68 @@ public class FavoriteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false);
+        view = inflater.inflate(R.layout.fragment_favorite, container, false);
+        getActivity().setTitle("Danh sách yêu thích");
+
+        adapter = new DatabaseAdapter(view.getContext());
+        adapter.open();
+        database = adapter.getDatabase();
+
+        bundle = getActivity().getIntent().getBundleExtra("bundle");
+        Account account = (Account) bundle.getSerializable("account");
+        String query = "select kimdung.* " +
+                        "from kimdung, favorite " +
+                        "where favorite.stID = kimdung.stID " +
+                        "and favorite.username = ?";
+        String[] selectionArgs = new String[] { account.getUserName() };
+        Cursor cursor = database.rawQuery(query, selectionArgs);
+        list = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Story story = new Story(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    cursor.getInt(2),
+                    cursor.getString(3),
+                    cursor.getString(4)
+            );
+            list.add(story);
+        }
+        cursor.close();
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.ff_list_favorite);
+        listStoryAdapter = new ListStoryAdapter(view.getContext(), list);
+        recyclerView.setAdapter(listStoryAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setItemAnimator(new SlideInUpAnimator());
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(view.getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Story story = list.get(position);
+                Bundle b = new Bundle();
+                b.putSerializable("story", story);
+                if (getActivity().getIntent().getBundleExtra("bundle") != null) {
+                    Account account = (Account) getActivity().getIntent().getBundleExtra("bundle").getSerializable("account");
+                    b.putSerializable("account", account);
+                    Log.e("username", account.getUserName());
+                    Log.e("password", account.getPassWord());
+                }
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("bundle", b);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        }));
+
+        return view;
     }
+
+    private Bundle bundle;
+    private List<Story> list;
+    private DatabaseAdapter adapter;
+    private SQLiteDatabase database;
+    private View view;
+    private ListStoryAdapter listStoryAdapter;
+    private RecyclerView recyclerView;
 
 }

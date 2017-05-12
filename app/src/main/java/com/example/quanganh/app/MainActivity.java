@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private MainFragment mainFragment = null;
+    private FavoriteFragment favoriteFragment = null;
     private boolean isLogin = false;
     private NavigationView navigationView;
     private Account account = null;
@@ -92,7 +93,15 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_home:
                 if (!mainFragment.isVisible()) {
+                    if (isLogin) {
+                        intent = new Intent(this, MainFragment.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("account", account);
+                        intent.putExtra("bundle", bundle);
+                        setIntent(intent);
+                    }
                     getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_main, mainFragment, "main_fragment")
                             .addToBackStack("main_fragment")
                             .commit();
@@ -100,7 +109,28 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_favorite:
                 if (isLogin) {
-
+                    if (favoriteFragment == null) {
+                        favoriteFragment = new FavoriteFragment();
+                        intent = new Intent(this, FavoriteFragment.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("account", account);
+                        intent.putExtra("bundle", bundle);
+                        setIntent(intent);
+                        getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(R.anim.slide_out_left, R.anim.slide_in_right)
+                                .replace(R.id.content_main, favoriteFragment, "favorite_fragment")
+                                .commit();
+                    } else if (favoriteFragment != null && !favoriteFragment.isVisible()) {
+                        intent = new Intent(this, FavoriteFragment.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("account", account);
+                        intent.putExtra("bundle", bundle);
+                        setIntent(intent);
+                        getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(R.anim.slide_out_left, R.anim.slide_in_right)
+                                .replace(R.id.content_main, favoriteFragment, "favorite_fragment")
+                                .commit();
+                    }
                 } else {
                     new AlertDialog.Builder(MainActivity.this)
                             .setTitle("Thông báo")
@@ -207,6 +237,13 @@ public class MainActivity extends AppCompatActivity
                                 MainActivity.this.setIntent(intent);
                                 navigationView.getMenu().getItem(3).setVisible(true);
                                 navigationView.getMenu().getItem(4).setVisible(false);
+                                if (!mainFragment.isVisible()) {
+                                    getSupportFragmentManager().beginTransaction()
+                                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                                            .replace(R.id.content_main, mainFragment, "main_fragment")
+                                            .addToBackStack("main_fragment")
+                                            .commit();
+                                }
                             }
                         })
                         .setNegativeButton("Không", new DialogInterface.OnClickListener() {

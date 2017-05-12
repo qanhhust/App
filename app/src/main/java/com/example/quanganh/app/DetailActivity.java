@@ -1,5 +1,6 @@
 package com.example.quanganh.app;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,6 +21,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -29,6 +33,9 @@ public class DetailActivity extends AppCompatActivity {
     TextView tvName, tvNum;
     WebView wvDescribe;
     Button btnRead;
+    Account account;
+    Story story;
+    boolean like = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +56,22 @@ public class DetailActivity extends AppCompatActivity {
         adapter.open();
         database = adapter.getDatabase();
 
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle = getIntent().getBundleExtra("bundle");
-        final Story story = (Story) bundle.getSerializable("story");
-        final Account account = (Account) bundle.getSerializable("account");
+        story = (Story) bundle.getSerializable("story");
+        account = (Account) bundle.getSerializable("account");
+
+        if (account != null) {
+            for (int index : getListFavorite()) {
+                if (index == story.getStId()) {
+                    imgFavorite.setImageResource(android.R.drawable.star_on);
+                    like = true;
+                }
+            }
+        }
+
         setTitle(story.getStName());
         tvName.setText(story.getStName());
         wvDescribe.setBackgroundColor(Color.TRANSPARENT);
@@ -75,7 +92,16 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (account != null) {
-
+                    if (like) {
+                        database.delete("favorite", "stID = ?", new String[] { String.valueOf(story.getStId()) });
+                        imgFavorite.setImageResource(android.R.drawable.star_off);
+                    } else {
+                        ContentValues values = new ContentValues();
+                        values.put("username", account.getUserName());
+                        values.put("stID", story.getStId());
+                        database.insert("favorite", null, values);
+                        imgFavorite.setImageResource(android.R.drawable.star_on);
+                    }
                 } else {
                     new AlertDialog.Builder(DetailActivity.this)
                             .setIcon(R.drawable.info)
@@ -103,6 +129,15 @@ public class DetailActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+    }
+
+    private List<Integer> getListFavorite() {
+        Cursor cursor = database.rawQuery("select * from favorite where username = ?", new String[] { account.getUserName() });
+        List<Integer> list = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            list.add(cursor.getInt(1));
+        }
+        return list;
     }
 
     @Override

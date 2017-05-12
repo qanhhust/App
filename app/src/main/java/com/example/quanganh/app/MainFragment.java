@@ -62,16 +62,16 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 Story story = list.get(position);
-                Bundle bund = new Bundle();
-                bund.putSerializable("story", story);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("story", story);
                 if (getActivity().getIntent().getBundleExtra("bundle") != null) {
                     Account account = (Account) getActivity().getIntent().getBundleExtra("bundle").getSerializable("account");
-                    bund.putSerializable("account", account);
+                    bundle.putSerializable("account", account);
                     Log.e("username", account.getUserName());
                     Log.e("password", account.getPassWord());
                 }
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("bundle", bund);
+                intent.putExtra("bundle", bundle);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -80,29 +80,10 @@ public class MainFragment extends Fragment {
         return view;
     }
 
-
-
-    public RecyclerView getRecyclerView() {
-        return recyclerView;
-    }
-
-    public List<Story> getList() {
-        return list;
-    }
-
-    public ListStoryAdapter getListStoryAdapter() {
-        return listStoryAdapter;
-    }
-
-    private Bundle bundle;
     private List<Story> list;
     private DatabaseAdapter adapter;
     private SQLiteDatabase database;
     private View view;
     private ListStoryAdapter listStoryAdapter;
     private RecyclerView recyclerView;
-
-    public void setUpLayout() {
-
-    }
 }
