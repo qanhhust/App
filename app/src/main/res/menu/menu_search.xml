@@ -4,7 +4,7 @@
     <item android:title="Tìm kiếm"
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
-        app:showAsAction="never"/>
+        app:showAsAction="always"/>
     <item
         android:title="Kiểm tra chính tả"
         android:id="@+id/action_check_syntax"
