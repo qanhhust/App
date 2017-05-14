@@ -50,7 +50,7 @@ public class FindActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             finish();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -61,7 +61,7 @@ public class FindActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             default:
                 break;
@@ -200,7 +200,7 @@ public class FindActivity extends AppCompatActivity {
                         intent.putExtra("find", findContent.getContent());
                         intent.putExtra("search", true);
                         startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     }
                 }));
             } else {

@@ -47,16 +47,16 @@ public class ListStoryAdapter extends RecyclerView.Adapter<ListStoryAdapter.View
         imageView.setImageResource(getContext().getResources().getIdentifier(story.getStImage(), "drawable", getContext().getPackageName()));
         TextView tvName = holder.tvName;
         tvName.setText(story.getStName());
-        TextView tvAuthor = holder.tvAuthor;
-        tvAuthor.setText("Tác giả : Kim Dung");
-        TextView tvDescribe = holder.tvDescribe;
-        String text = story.getStDescribe();
-        text = text.replaceAll("<br />", "\n");
-        text = text.replaceAll("<p>", "");
-        text = text.replaceAll("</p>", "");
-        text = text.replaceAll("<span>", "");
-        text = text.replaceAll("</span>", "");
-        tvDescribe.setText("Nội dung : " + text);
+//        TextView tvAuthor = holder.tvAuthor;
+//        tvAuthor.setText("Tác giả : Kim Dung");
+//        TextView tvDescribe = holder.tvDescribe;
+//        String text = story.getStDescribe();
+//        text = text.replaceAll("<br />", "\n");
+//        text = text.replaceAll("<p>", "");
+//        text = text.replaceAll("</p>", "");
+//        text = text.replaceAll("<span>", "");
+//        text = text.replaceAll("</span>", "");
+//        tvDescribe.setText("Nội dung : " + text);
         CardView cardView = holder.cardView;
 //        cardView.setCardBackgroundColor(Color.argb(64, 52, 73, 94));
         cardView.setCardBackgroundColor(Color.argb(64, 206, 230, 255));
@@ -83,8 +83,8 @@ public class ListStoryAdapter extends RecyclerView.Adapter<ListStoryAdapter.View
             super(itemView);
             imageView = (ImageView)itemView.findViewById(R.id.lsl_image);
             tvName = (TextView)itemView.findViewById(R.id.lsl_name);
-            tvAuthor = (TextView)itemView.findViewById(R.id.lsl_author);
-            tvDescribe = (TextView)itemView.findViewById(R.id.lsl_describe);
+//            tvAuthor = (TextView)itemView.findViewById(R.id.lsl_author);
+//            tvDescribe = (TextView)itemView.findViewById(R.id.lsl_describe);
             cardView = (CardView)itemView.findViewById(R.id.lsl_card_view);
         }
 

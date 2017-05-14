@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -26,12 +27,10 @@ import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
     DatabaseAdapter adapter;
     SQLiteDatabase database;
     ImageView img, imgFavorite;
-    TextView tvName, tvNum;
-    WebView wvDescribe;
+    TextView tvName, tvNum, tvDescribe;
     Button btnRead;
     Account account;
     Story story;
@@ -49,7 +48,7 @@ public class DetailActivity extends AppCompatActivity {
         imgFavorite = (ImageView) findViewById(R.id.ad_favorite);
         tvName = (TextView) findViewById(R.id.ad_name);
         tvNum = (TextView) findViewById(R.id.ad_num_chap);
-        wvDescribe = (WebView) findViewById(R.id.ad_describe);
+        tvDescribe = (TextView) findViewById(R.id.ad_describe);
         btnRead = (Button) findViewById(R.id.ad_btn_read);
 
         adapter = new DatabaseAdapter(getApplicationContext());
@@ -74,9 +73,7 @@ public class DetailActivity extends AppCompatActivity {
 
         setTitle(story.getStName());
         tvName.setText(story.getStName());
-        wvDescribe.setBackgroundColor(Color.TRANSPARENT);
-        String describe = "<html><body style=\"color: white; font-size: 15px;\">" + story.getStDescribe() + "</body></html>";
-        wvDescribe.loadDataWithBaseURL(null, describe, "text/html", "utf-8", null);
+        tvDescribe.setText(Html.fromHtml(story.getStDescribe(), 1), TextView.BufferType.SPANNABLE);
         img.setImageResource(getMipmapResIdByName(story.getStImage()));
 
         Cursor cursor = database.rawQuery(
@@ -126,7 +123,7 @@ public class DetailActivity extends AppCompatActivity {
                 bundle.putSerializable("story", story);
                 intent.putExtra("bundle", bundle);
                 startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
@@ -146,7 +143,7 @@ public class DetailActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             default:
                 break;
@@ -158,7 +155,7 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             finish();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         return super.onKeyDown(keyCode, event);
     }

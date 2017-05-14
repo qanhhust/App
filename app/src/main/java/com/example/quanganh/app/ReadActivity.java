@@ -7,6 +7,7 @@ import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.BackgroundColorSpan;
@@ -27,12 +28,13 @@ import java.util.Locale;
 
 public class ReadActivity extends AppCompatActivity {
 
-    TextView tvContent;
-    ScrollView svContent;
-    Chap chap;
-    Bundle bundle;
-    Dialog dialog;
-    String content;
+    private TextView tvContent;
+    private ScrollView svContent;
+    private Chap chap;
+    private Bundle bundle;
+    private Dialog dialog;
+    private String content;
+    private int line;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +56,23 @@ public class ReadActivity extends AppCompatActivity {
         setTitle(chap.getDeName());
 
         content = format(chap.getDeContent());
-        tvContent.setText(content);
+//        tvContent.setText(content);
+        tvContent.setText(Html.fromHtml(chap.getDeContent(), 1), TextView.BufferType.SPANNABLE);
+
+        line = bundle.getInt("line", 0);
+        svContent.post(new Runnable() {
+            @Override
+            public void run() {
+                svContent.scrollTo(0, line);
+            }
+        });
 
         boolean search = getIntent().getBooleanExtra("search", false);
         if (search) {
             Log.e("search", "true");
             final String find = getIntent().getStringExtra("find");
-            int index = content.indexOf(find);
+//            int index = content.indexOf(find);
+            int index = tvContent.getText().toString().indexOf(find);
             Spannable spannable = new SpannableString(tvContent.getText());
             if (index != -1) {
                 spannable.setSpan(new BackgroundColorSpan(0xFFF9740E), index, index + find.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -122,8 +134,21 @@ public class ReadActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                svContent.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        line = svContent.getScrollY();
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("line", line);
+                        bundle.putSerializable("chap", chap);
+                        intent.putExtra("bundle", bundle);
+                        setResult(1, intent);
+                        Log.e("chap", chap.getDeName());
+                        finish();
+//                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    }
+                });
                 break;
             case R.id.action_search:
                 dialog = new Dialog(ReadActivity.this, android.R.style.Theme_Holo_Light_Dialog);
@@ -149,7 +174,7 @@ public class ReadActivity extends AppCompatActivity {
                             intent.putExtra("name", storyName);
                             intent.putExtra("find", paragraph);
                             startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                     }
                 });
@@ -193,7 +218,8 @@ public class ReadActivity extends AppCompatActivity {
             if (rule[i] != null) {
                 if (!rule[i].checkValid(str)) {
                     System.err.println(str);
-                    int index = content.indexOf(str);
+//                    int index = content.indexOf(str);
+                    int index = tvContent.getText().toString().indexOf(str);
                     Spannable spannable = new SpannableString(tvContent.getText());
                     if (index != -1) {
                         spannable.setSpan(new BackgroundColorSpan(0xFFF9740E), index, index + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -256,8 +282,21 @@ public class ReadActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            svContent.post(new Runnable() {
+                @Override
+                public void run() {
+                    line = svContent.getScrollY();
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("line", line);
+                    bundle.putSerializable("chap", chap);
+                    intent.putExtra("bundle", bundle);
+                    setResult(1, intent);
+                    Log.e("chap", chap.getDeName());
+                    finish();
+//                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                }
+            });
         }
         return super.onKeyDown(keyCode, event);
     }
