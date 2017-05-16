@@ -81,12 +81,37 @@ public class FavoriteFragment extends Fragment {
                 }
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 intent.putExtra("bundle", b);
-                startActivity(intent);
-//                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                startActivityForResult(intent, 1);
             }
         }));
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == 1) {
+            if (data != null) {
+                boolean like = data.getBooleanExtra("like", true);
+                if (!like) {
+                    int id = data.getIntExtra("id", 0);
+                    for (Story s : list) {
+                        if (s.getStId() == id) {
+                            list.remove(s);
+                        }
+                    }
+                    listStoryAdapter = new ListStoryAdapter(view.getContext(), list);
+                    recyclerView.setAdapter(listStoryAdapter);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     private Bundle bundle;

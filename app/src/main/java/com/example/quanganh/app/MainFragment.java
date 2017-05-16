@@ -31,12 +31,12 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
         getActivity().setTitle("Trang chủ");
 
-        adapter = new DatabaseAdapter(view.getContext());
+        DatabaseAdapter adapter = new DatabaseAdapter(view.getContext());
         adapter.open();
-        database = adapter.getDatabase();
+        SQLiteDatabase database = adapter.getDatabase();
 
         Cursor cursor = database.query("kimdung", null, null, null, null, null, null);
         list = new ArrayList<>();
@@ -52,8 +52,8 @@ public class MainFragment extends Fragment {
         }
         cursor.close();
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.fm_list_story);
-        listStoryAdapter = new ListStoryAdapter(view.getContext(), list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.fm_list_story);
+        ListStoryAdapter listStoryAdapter = new ListStoryAdapter(view.getContext(), list);
         recyclerView.setAdapter(listStoryAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new SlideInUpAnimator());
@@ -73,7 +73,6 @@ public class MainFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 intent.putExtra("bundle", bundle);
                 startActivity(intent);
-//                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         }));
 
@@ -81,9 +80,4 @@ public class MainFragment extends Fragment {
     }
 
     private List<Story> list;
-    private DatabaseAdapter adapter;
-    private SQLiteDatabase database;
-    private View view;
-    private ListStoryAdapter listStoryAdapter;
-    private RecyclerView recyclerView;
 }

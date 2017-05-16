@@ -102,9 +102,7 @@ public class MainActivity extends AppCompatActivity
                         setIntent(intent);
                     }
                     getSupportFragmentManager().beginTransaction()
-//                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_main, mainFragment, "main_fragment")
-                            .addToBackStack("main_fragment")
                             .commit();
                 }
                 break;
@@ -118,7 +116,6 @@ public class MainActivity extends AppCompatActivity
                         intent.putExtra("bundle", bundle);
                         setIntent(intent);
                         getSupportFragmentManager().beginTransaction()
-//                                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                                 .replace(R.id.content_main, favoriteFragment, "favorite_fragment")
                                 .commit();
                     } else if (!favoriteFragment.isVisible()) {
@@ -128,13 +125,11 @@ public class MainActivity extends AppCompatActivity
                         intent.putExtra("bundle", bundle);
                         setIntent(intent);
                         getSupportFragmentManager().beginTransaction()
-//                                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                                 .replace(R.id.content_main, favoriteFragment, "favorite_fragment")
                                 .commit();
                     }
                 } else {
                     new AlertDialog.Builder(MainActivity.this)
-//                            .setTitle("Thông báo")
                             .setMessage("Bạn chưa đăng nhập")
                             .setIcon(R.drawable.info)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -205,7 +200,6 @@ public class MainActivity extends AppCompatActivity
                         navigationView.getMenu().getItem(4).setVisible(false);
                         if (!mainFragment.isVisible()) {
                             getSupportFragmentManager().beginTransaction()
-//                                    .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                                     .replace(R.id.content_main, mainFragment, "main_fragment")
                                     .addToBackStack("main_fragment")
                                     .commit();

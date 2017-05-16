@@ -56,7 +56,6 @@ public class ReadActivity extends AppCompatActivity {
         setTitle(chap.getDeName());
 
         content = format(chap.getDeContent());
-//        tvContent.setText(content);
         tvContent.setText(Html.fromHtml(chap.getDeContent(), 1), TextView.BufferType.SPANNABLE);
 
         line = bundle.getInt("line", 0);
@@ -71,7 +70,6 @@ public class ReadActivity extends AppCompatActivity {
         if (search) {
             Log.e("search", "true");
             final String find = getIntent().getStringExtra("find");
-//            int index = content.indexOf(find);
             int index = tvContent.getText().toString().indexOf(find);
             Spannable spannable = new SpannableString(tvContent.getText());
             if (index != -1) {
@@ -146,7 +144,6 @@ public class ReadActivity extends AppCompatActivity {
                         setResult(1, intent);
                         Log.e("chap", chap.getDeName());
                         finish();
-//                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     }
                 });
                 break;
@@ -174,7 +171,6 @@ public class ReadActivity extends AppCompatActivity {
                             intent.putExtra("name", storyName);
                             intent.putExtra("find", paragraph);
                             startActivity(intent);
-//                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                     }
                 });
@@ -218,7 +214,6 @@ public class ReadActivity extends AppCompatActivity {
             if (rule[i] != null) {
                 if (!rule[i].checkValid(str)) {
                     System.err.println(str);
-//                    int index = content.indexOf(str);
                     int index = tvContent.getText().toString().indexOf(str);
                     Spannable spannable = new SpannableString(tvContent.getText());
                     if (index != -1) {
@@ -294,7 +289,6 @@ public class ReadActivity extends AppCompatActivity {
                     setResult(1, intent);
                     Log.e("chap", chap.getDeName());
                     finish();
-//                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 }
             });
         }

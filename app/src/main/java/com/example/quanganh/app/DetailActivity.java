@@ -63,11 +63,9 @@ public class DetailActivity extends AppCompatActivity {
         account = (Account) bundle.getSerializable("account");
 
         if (account != null) {
-            for (int index : getListFavorite()) {
-                if (index == story.getStId()) {
-                    imgFavorite.setImageResource(android.R.drawable.star_on);
-                    like = true;
-                }
+            if (isFavorite() == 1) {
+                imgFavorite.setImageResource(android.R.drawable.star_on);
+                like = true;
             }
         }
 
@@ -92,12 +90,14 @@ public class DetailActivity extends AppCompatActivity {
                     if (like) {
                         database.delete("favorite", "stID = ?", new String[] { String.valueOf(story.getStId()) });
                         imgFavorite.setImageResource(android.R.drawable.star_off);
+                        like = false;
                     } else {
                         ContentValues values = new ContentValues();
                         values.put("username", account.getUserName());
                         values.put("stID", story.getStId());
                         database.insert("favorite", null, values);
                         imgFavorite.setImageResource(android.R.drawable.star_on);
+                        like = true;
                     }
                 } else {
                     new AlertDialog.Builder(DetailActivity.this)
@@ -123,18 +123,21 @@ public class DetailActivity extends AppCompatActivity {
                 bundle.putSerializable("story", story);
                 intent.putExtra("bundle", bundle);
                 startActivity(intent);
-//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
 
-    private List<Integer> getListFavorite() {
-        Cursor cursor = database.rawQuery("select * from favorite where username = ?", new String[] { account.getUserName() });
-        List<Integer> list = new ArrayList<>();
+    private int isFavorite() {
+        int count = 0;
+
+        Cursor cursor = database.rawQuery("select * from favorite where username = ? and stID = ?",
+                new String[] { account.getUserName(), String.valueOf(story.getStId()) });
         while (cursor.moveToNext()) {
-            list.add(cursor.getInt(1));
+            count++;
         }
-        return list;
+        cursor.close();
+
+        return count;
     }
 
     @Override
@@ -142,8 +145,11 @@ public class DetailActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
+                Intent intent = new Intent();
+                intent.putExtra("id", story.getStId());
+                intent.putExtra("like", like);
+                setResult(1, intent);
                 finish();
-//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             default:
                 break;
@@ -154,8 +160,11 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent();
+            intent.putExtra("id", story.getStId());
+            intent.putExtra("like", like);
+            setResult(1, intent);
             finish();
-//            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         return super.onKeyDown(keyCode, event);
     }

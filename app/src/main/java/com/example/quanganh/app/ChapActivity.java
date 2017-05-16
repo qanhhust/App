@@ -167,7 +167,6 @@ public class ChapActivity extends AppCompatActivity {
                 Intent intent = new Intent(ChapActivity.this, ReadActivity.class);
                 intent.putExtra("bundle", bundle);
                 startActivityForResult(intent, 1);
-//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         }));
     }
@@ -192,7 +191,6 @@ public class ChapActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 finish();
-//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -201,7 +199,6 @@ public class ChapActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             finish();
-//            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         return super.onKeyDown(keyCode, event);
     }
